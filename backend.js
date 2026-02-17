@@ -17,7 +17,7 @@ function updateQuestions(config, callback = () => {}) {
         fetch(url)
             .then(res => res.text())
             .then(body => {
-                const file = fs.openSync(key+".csv", "w")
+                const file = fs.openSync(process.env["PERSISTENT_ROOT"] + key+".csv", "w")
                 fs.writeFileSync(file, body)
                 fs.closeSync(file)
             })
@@ -36,7 +36,7 @@ function questionInit(config) {
     let loaded = {}
 
     for (const item of toLoad) {
-        const records = parse(fs.readFileSync(config.files[item], "utf-8"), {
+        const records = parse(fs.readFileSync(process.env["PERSISTENT_ROOT"] + config.files[item], "utf-8"), {
             from: 2,
             relax_column_count: true
         })
@@ -51,7 +51,7 @@ function questionInit(config) {
         loaded[item] = obj
     }
     
-    const categoryRecords = parse(fs.readFileSync(config.files.categories, "utf-8"), {
+    const categoryRecords = parse(fs.readFileSync(process.env["PERSISTENT_ROOT"] + config.files.categories, "utf-8"), {
         from: 2,
         relax_column_count: true
     })

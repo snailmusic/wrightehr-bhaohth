@@ -21,6 +21,10 @@ const questions = [
     {type: "ttrpg", commands: ["rpg"]}
 ]
 
+if (process.env["PERSISTENT_ROOT"] == undefined) {
+    process.env["PERSISTENT_ROOT"] = ""
+}
+
 // function updateSheets() {
 //     let sheetId = process
 // }
@@ -48,7 +52,7 @@ for (const file of commandFiles) {
 client.once(Events.ClientReady, c => {
     log(`Ready, logged in as ${c.user.tag}`)
     client.user.setActivity(">help or /help", {type: ActivityType.Playing})
-    if (!fs.existsSync("categories.csv")) {
+    if (!fs.existsSync(process.env["PERSISTENT_ROOT"] + "categories.csv")) {
         log("updating questions")
         backend.updateQuestions(config)
     }
@@ -210,6 +214,7 @@ client.addListener(Events.MessageCreate, async (message) => {
             break;
 
         case "download":
+        case "reload":
         case "update":
             if (!config.reloadAllowed.includes(message.author.id)) {
                 await message.channel.send("you dont have valid perms >:(");
