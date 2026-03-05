@@ -115,8 +115,8 @@ function thingPicker(questions, filters) {
     let pos = []
     let neg = []
     for (const filter of filters) {
-        if (filter.at(0) == "-") {neg.push(filter.slice(1))}
-        else { pos.push(filter) }
+        if (filter.at(0) == "-") {neg.push(filter.toLowerCase().slice(1))}
+        else { pos.push(filter.toLowerCase()) }
     }
     let filteredQs = []
     outer: for (const item of questions) {
