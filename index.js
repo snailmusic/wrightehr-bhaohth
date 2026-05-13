@@ -58,6 +58,8 @@ client.once(Events.ClientReady, c => {
     }
     // log(config)
     questionData = backend.questionInit(config)
+
+    client.users.cache.get(config.userdm).send("I'm up!")
     // log(questionData.cats)
     // log("if ur cool then you will print this out")
     // log(worldQs)
