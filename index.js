@@ -5,7 +5,6 @@ const io = require("@pm2/io")
 const backend = require("./backend.js")
 const path = require("path")
 const fs = require("fs")
-const fetch = require("node-fetch")
 
 require('dotenv').config()
 
@@ -254,6 +253,29 @@ client.addListener(Events.MessageCreate, async (message) => {
 function pickDisplay(thing) {
     if (!thing) { return "Nothing matches your filters!" }
     return `${thing.slice(0, 1)} \`[${thing.slice(1).join(", ")}]\``
+}
+
+if (process.env["TRAFFIC_URL"]!= undefined) {
+    // checks the traffic light system
+    setInterval(() => {
+        let url = process.env["TRAFFIC_URL"] + "/status"
+        fetch(url)
+            .then(res => res.json())
+            .then(data => {
+                console.log(data);
+                if (data["status"] == "WARN") {
+                    client.user.setStatus('idle')
+                    client.user.setActivity("downtime soon!", {type: ActivityType.Playing})
+                }
+                if (data["status"] == "DEAD") {
+                    client.user.setStatus('dnd')
+                    client.user.setActivity("downtime imminent!", {type: ActivityType.Playing})
+                }
+                if (data["status"] == "OK") {
+                    client.user.setStatus('online')
+                }
+            })
+    }, 1000*60*15);
 }
 
 client.login(process.env["DISCORD_TOKEN"])

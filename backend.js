@@ -7,7 +7,6 @@ function loadConfig(filename) {
 }
 
 function updateQuestions(config, callback = () => {}) {
-    const fetch = require("node-fetch")
     const fs = require("fs")
 
     let base = `https://docs.google.com/spreadsheets/d/${config.sheetsId}/export?gid=`
