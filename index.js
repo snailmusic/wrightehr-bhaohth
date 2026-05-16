@@ -5,6 +5,7 @@ const io = require("@pm2/io")
 const backend = require("./backend.js")
 const path = require("path")
 const fs = require("fs")
+const fetch = require("node-fetch")
 
 require('dotenv').config()
 
@@ -49,7 +50,7 @@ for (const file of commandFiles) {
     }
 }
 
-client.once(Events.ClientReady, c => {
+client.once(Events.ClientReady, async c => {
     log(`Ready, logged in as ${c.user.tag}`)
     client.user.setActivity(">help or /help", {type: ActivityType.Playing})
     if (!fs.existsSync(process.env["PERSISTENT_ROOT"] + "categories.csv")) {
@@ -59,7 +60,8 @@ client.once(Events.ClientReady, c => {
     // log(config)
     questionData = backend.questionInit(config)
 
-    client.users.cache.get(config.userdm).send("I'm up!")
+    let user = await client.users.fetch(config.userdm)
+    user.createDM().then(x => x.send("im up!! :3"))
     // log(questionData.cats)
     // log("if ur cool then you will print this out")
     // log(worldQs)
